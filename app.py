@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, json
 from products import products as products_list
-from telegram import sendMessage
+from telegram_ import sendMessage
 from tabulate import tabulate
 from flask_mail import Mail, Message
 
