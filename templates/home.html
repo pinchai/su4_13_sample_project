@@ -1,0 +1,64 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div class="container mt-2">
+        <!-- Top Slider -->
+        {% include 'slider.html' %}
+
+        <!-- Product Card -->
+        <div class="row">
+            {% for item in products %}
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <div class="discount">{{ item['category'] }}</div>
+                        <img
+                                src="{{ item['image'] }}"
+                                alt="{{ item['image'] }}"
+                                style="height: 200px; object-fit: contain"
+                        >
+                        <p class="product-title">{{ item['title'] }}</p>
+                        <p>${{ item['price'] }}</p>
+                        <input
+                                type="button"
+                                class="btn btn-sm btn-outline-primary w-100 btn-add-to-cart"
+                                value="Add To Cart"
+                                data-id="{{ item['id'] }}"
+                                data-title="{{ item['title'] }}"
+                                data-price="{{ item['price'] }}"
+                                data-image="{{ item['image'] }}"
+                        >
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_script %}
+    <script>
+        let carts = JSON.parse(localStorage.getItem('carts') ?? '[]')
+        document.querySelectorAll('.btn-add-to-cart').forEach(item => {
+            item.addEventListener('click', function () {
+                let id = this.getAttribute('data-id')
+                let title = this.getAttribute('data-title')
+                let price = this.getAttribute('data-price')
+                let image = this.getAttribute('data-image')
+                let dpl_index = carts.findIndex(cart => cart.id === id)
+
+                if (dpl_index !== -1) {
+                    carts[dpl_index].qty += 1
+                } else {
+                    carts.push({
+                        'id': id,
+                        'title': title,
+                        'qty': 1,
+                        'price': price,
+                        'image': image
+                    })
+                }
+                localStorage.setItem('carts', JSON.stringify(carts))
+                countCartItem()
+            })
+        })
+    </script>
+{% endblock %}
+

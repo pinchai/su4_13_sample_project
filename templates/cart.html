@@ -1,0 +1,87 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Your Cart</h2>
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-md-8" id="item_box">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <img src="https://via.placeholder.com/80" class="img-fluid rounded" alt="Product">
+                            </div>
+                            <div class="col-3">
+                                <h5 class="mb-1">Product Name 1</h5>
+                                <p class="mb-0 text-muted">Description here</p>
+                            </div>
+                            <div class="col-2">
+                                <input type="number" class="form-control" value="1" min="1">
+                            </div>
+                            <div class="col-2">
+                                <strong>$20.00</strong>
+                            </div>
+                            <div class="col-2 text-right">
+                                <button class="btn btn-danger btn-sm">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Repeat -->
+                <a href="/" class="btn btn-link">Continue Shopping</a>
+            </div>
+            <!-- Summary -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Order Summary
+                    </div>
+                    <div class="card-body">
+                        <h5>Total (USD): <span class="float-right" id="label_total_usd">$55.00</span></h5>
+                        <h5>Total (KHR): <span class="float-right" id="label_total_khr">$55.00</span></h5>
+                        <a href="/checkout" class="btn btn-success btn-block mt-3">Proceed to Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_script %}
+    <script>
+        let item_box = document.getElementById('item_box')
+        let carts = JSON.parse(localStorage.getItem('carts') ?? '[]')
+        let cart_item =  ``
+        let total = 0
+        carts.forEach((item, index)=>{
+            total+= (item.price * item.qty)
+            cart_item+=`<div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <img style="height: 50px; object-fit: contain" src="${item.image}" class="img-fluid rounded" alt="Product">
+                            </div>
+                            <div class="col-3">
+                                <h5 class="mb-1">${item.title}</h5>
+                            </div>
+                            <div class="col-2">
+                                <input type="number" class="form-control" value="${item.qty}" min="1"> x $${item.price}
+                            </div>
+                            <div class="col-2">
+                                <strong style="color: red">$${item.price * item.qty}</strong>
+                                <strong style="color: red">៛${((item.price * item.qty) * 4100).toLocaleString()}</strong>
+                            </div>
+                            <div class="col-2 text-right">
+                                <button class="btn btn-danger btn-sm">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        })
+        document.getElementById('label_total_usd').innerHTML = `${total.toFixed(2)}`
+        document.getElementById('label_total_khr').innerHTML = `${(total * 4100).toLocaleString()}`
+        item_box.innerHTML = ''
+        item_box.innerHTML = cart_item
+    </script>
+{% endblock %}

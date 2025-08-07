@@ -1,0 +1,88 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <h2 class="mb-4">Checkout</h2>
+        <div class="row">
+            <!-- Order Summary Sidebar -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Order Summary</div>
+                    <div class="card-body">
+                        <ul class="list-group mb-3">
+                            <div id="item_box">
+                            </div>
+
+                            <li class="list-group-item d-flex justify-content-between bg-success text-light">
+                                <h3>Total</h3>
+                                <h3>
+                                    $<span id="label_total_usd">40.00</span>
+                                    <br>
+                                    ៛<span id="label_total_khr">400,000.00</span>
+                                </h3>
+                            </li>
+                        </ul>
+                        <a href="/cart" class="btn btn-link btn-block text-success">Back to Cart</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing & Shipping Form -->
+            <div class="col-md-4">
+                <form method="post" action="place-order">
+                    <h4>Billing Address</h4>
+                    <div class="form-group">
+                        <label for="inputName">Full Name</label>
+                        <input name="full_name" required type="text" class="form-control" id="inputName"
+                               placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input name="email" required type="email" class="form-control" id="inputEmail"
+                               placeholder="you@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPhone">Phone</label>
+                        <input name="phone" required type="text" class="form-control" id="inputPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress">Address</label>
+                        <textarea name="address" required rows="5" class="form-control" id="inputAddress"
+                                  placeholder="1234 Main St"></textarea>
+                    </div>
+                    <input type="hidden" id="cart_item" name="cart_item">
+                    <hr>
+                    <button type="submit" class="btn btn-success btn-block mt-4">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block custom_script %}
+    <script>
+        //
+        let item_box = document.getElementById('item_box')
+        let carts = JSON.parse(localStorage.getItem('carts') ?? '[]')
+        document.getElementById('cart_item').value = JSON.stringify(carts)
+
+        let cart_item = ``
+        let total = 0
+        carts.forEach((item, index) => {
+            total += (item.price * item.qty)
+            cart_item += ` <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div>
+                                        <h6 class="my-0">${item.title}</h6>
+                                    </div>
+                                    <span class="text-muted">${item.price} x ${item.qty} = <strong>${(item.price * item.qty).toFixed(2)}</strong></span>
+
+                                </li>
+            `
+        })
+        item_box.innerHTML = ''
+        item_box.innerHTML = cart_item
+        let total_khr = Math.ceil(total * 4100 / 100) * 100
+        document.getElementById('label_total_usd').innerText = total.toFixed(2)
+        document.getElementById('label_total_khr').innerText = total_khr.toLocaleString()
+    </script>
+{% endblock %}

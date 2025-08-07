@@ -1,0 +1,28 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div class="container mt-2">
+        <!-- Product Card -->
+        <div class="row">
+            {% for item in products %}
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <div class="discount">{{ item['category'] }}</div>
+                        <img
+                                src="{{ item['image'] }}"
+                                alt="{{ item['image'] }}"
+                                style="height: 200px; object-fit: contain"
+                        >
+                        <p class="product-title">{{ item['title'] }}</p>
+                        <p>${{ item['price'] }}</p>
+                        <input
+                                type="button"
+                                class="btn btn-sm btn-outline-primary w-100"
+                                value="Add To Cart"
+                        >
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
